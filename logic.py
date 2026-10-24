@@ -16,22 +16,6 @@ class DatabaseManager:
         conn.close()
         return cursor.rowcount > 0
 
-    def get_owner(self, user_id):
-        conn = sqlite3.connect(self.database)
-        with conn:
-            owner = conn.execute(
-                'SELECT id, name FROM owner WHERE id = ?', (user_id,)
-            ).fetchone()
-        conn.close()
-        return owner
-
-    def get_statuses(self):
-        conn = sqlite3.connect(self.database)
-        with conn:
-            statuses = conn.execute('SELECT name FROM status ORDER BY id').fetchall()
-        conn.close()
-        return [row[0] for row in statuses]
-
     def get_tasks(self, user_id):
         conn = sqlite3.connect(self.database)
         with conn:
@@ -44,8 +28,6 @@ class DatabaseManager:
         return tasks
 
     def add_task(self, user_id, task_name):
-        if not self.get_owner(user_id):
-            return False
         conn = sqlite3.connect(self.database)
         with conn:
             cursor = conn.execute('''
@@ -57,8 +39,6 @@ class DatabaseManager:
         return cursor.rowcount > 0
 
     def update_task(self, user_id, task_id, status_name):
-        if status_name not in self.get_statuses():
-            return False
         conn = sqlite3.connect(self.database)
         with conn:
             cursor = conn.execute('''
