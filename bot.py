@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 from config import TOKEN, DATABASE
-from logic import DatabaseManager
+from logic import DbManager
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -10,7 +10,7 @@ bot = commands.Bot(
     command_prefix='!', intents=intents,
     allowed_mentions=discord.AllowedMentions.none()
 )
-manager = DatabaseManager(DATABASE)
+manager = DbManager(DATABASE)
 
 @bot.command()
 async def start(ctx, *, name: str):
@@ -48,10 +48,10 @@ async def add(ctx, *, name: str):
 
 
 @bot.command()
-async def update(ctx, task_id: int, *, status: str):
-    """Contoh: !update 1 on progress"""
+async def update(ctx, task_id: int, *, status_id: str):
+    """Contoh: !update 1 1"""
     status = status.strip().lower()
-    if manager.update_task(ctx.author.id, task_id, status):
+    if manager.update_task(ctx.author.id, task_id, status_id):
         await ctx.send('Status task berhasil diubah.')
     else:
         await ctx.send('Task tidak ditemukan dalam daftar milikmu. Periksa !list.')
